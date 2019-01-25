@@ -1,0 +1,21 @@
+﻿@model IEnumerable<VR_Vacation.Models.DestinationVm>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<h1>Destinations</h1>
+<div class="card-deck">
+    @foreach (var item in Model)
+    {
+        <div class="card mb-4">
+            <img src="@Html.DisplayFor(model => item.ImagePath)" class="card-img-top" alt="image" style="max-width: 100%; max-height:100%;" />
+            <div class="card-body">
+                <h3 class="card-title">@Html.DisplayFor(model => item.Name)</h3>
+                <h7 class="card-title">@Html.DisplayFor(model => item.Description)</h7><br />
+                <a href="Package/getPackageByDestinationId/@item.Id" class="btn btn-primary">See more...</a>
+            </div>
+        </div>
+    }
+</div>

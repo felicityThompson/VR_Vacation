@@ -1,0 +1,57 @@
+﻿@model VR_Vacation.Models.PackageVm
+
+@{
+    ViewBag.Title = "Package";
+}
+
+<h1>@Html.DisplayFor(model => model.Name)</h1>
+<div class="list-group">
+    <div class="list-group">
+        <img src="@Html.DisplayFor(model =>model.ImagePath)" alt="image" style="max-width: 100%; max-height:100%;" />
+        <div>
+            <h7>@Html.DisplayFor(model => model.Description)</h7><br />
+            <p><small class="text-muted">@Html.DisplayFor(model => model.Price)</small>:- SEK</p>
+            <div id="addedToCart"></div>
+            <a id="addToCart" class="btn btn-primary">Add to cart</a>
+            <a href="/ShoppingCart/Index" id="goToCart" class="btn btn-info">Go to cart</a>
+        </div>
+    </div>
+</div>
+@Html.Action("Index", "Experiences", @Model.Id)
+
+@section scripts{
+    <script>
+        $(function() {
+            $('#addToCart').click(function(event) {
+                var id = @Html.Raw(Json.Encode(Model.Id))
+                $.ajax({
+                    type: "POST",
+                    url: "/package/AddPackageToCart",
+                    dataType: "json",
+                    data: { id: id },
+                    success: function(result) {
+                        $('#addedToCart').html(result.responseMessage);
+                        $('#addedToCart').addClass('alert alert-info');
+                    }
+                });
+            });
+        });
+
+        //Experiences/Index.cshtml
+        $(function() {
+            $('.addExpToCart').click(function(event) {
+                var id = $(this).attr('value');
+                $.ajax({
+                    type: "POST",
+                    url: "/Experiences/AddExperienceToCart",
+                    dataType: "json",
+                    data: { id: id },
+                    success: function(result) {
+                        $("#exp-" + id).html(result.responseMessage);
+                        $("#exp-" + id).addClass('alert alert-info');
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,20 @@
+﻿@model IEnumerable<VR_Vacation.Models.ExperienceVm>
+
+
+<h1>Optional Extras</h1>
+<div class="list-group">
+    @foreach (var item in Model)
+    {
+    <div class="list-group">
+        <h2>@Html.DisplayFor(model => item.Name)</h2>
+        <img src="@Html.DisplayFor(model => item.ImagePath)" alt="image" style="max-width: 100%; max-height: 100%;" />
+        <div>
+            <h7>@Html.DisplayFor(model => item.Description)</h7>
+            <p><small class="text-muted">@Html.DisplayFor(model => item.Price)</small>:- SEK</p>
+            <div id="exp-@item.Id" class="addedExpToClass"></div>
+            <a value="@item.Id" class="addExpToCart btn btn-primary">Add to cart</a>
+            <a href="/ShoppingCart/Index" id="goToCart" class="btn btn-info">Go to cart</a>
+        </div>
+    </div>
+    }
+</div>
