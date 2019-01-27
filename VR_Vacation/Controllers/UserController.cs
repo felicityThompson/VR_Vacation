@@ -1,17 +1,16 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using VR_Vacation.Models;
-using VR_Vacation.Repositories;
+using VR_Vacation.Services;
 
 namespace VR_Vacation.Controllers
 {
     public class UserController : Controller
     {
-        private IVacationRepository _vacationRepository;
+        private IUserService _iUserService;
 
-        public UserController(IVacationRepository vacationRepository)
+        public UserController(IUserService iUserService)
         {
-            _vacationRepository = vacationRepository;
+            _iUserService = iUserService;
         }
 
         //Sign Up
@@ -26,20 +25,14 @@ namespace VR_Vacation.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (_vacationRepository.PostUser(user))
-                {
-                    if (user != null)
-                    {
-                        Session["user"] = user;
+                if (_iUserService.PostUser(user)) return Redirect("/Home/Index");
 
-                        return Redirect("/Home/Index");
-                    }
-                }
                 TempData["Error"] = "Username already in use";
-            }
 
+            }
             return View("SignUp");
         }
+
         //Log In
         public ActionResult LogIn()
         {
@@ -52,14 +45,8 @@ namespace VR_Vacation.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _vacationRepository.VerifyUser(login.Username, login.Password);
+                if(_iUserService.VerifyUser(login)) return Redirect("/Home/Index");
 
-                if (user != null)
-                {
-                    Session["user"] = user;
-
-                    return Redirect("/Home/Index");                    
-                }
                 TempData["Error"] = "Username or password is incorrect";
             }
 
@@ -68,7 +55,7 @@ namespace VR_Vacation.Controllers
 
         public ActionResult Logout()
         {
-            Session["user"] = null;
+            _iUserService.RemoveUser();
 
             return Redirect("/Home/Index");
         }

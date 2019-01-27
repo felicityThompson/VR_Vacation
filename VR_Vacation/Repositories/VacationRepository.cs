@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using AutoMapper;
 using VR_Vacation.DataAccess;
 using VR_Vacation.Models;
@@ -17,17 +15,6 @@ namespace VR_Vacation.Repositories
             _mapper = mapper;
         }
 
-        public DestinationVm GetDestination(int id)
-        {
-            using (var context = new VacationContext())
-            {
-                var destination = context.Destinations.Find(id);
-                var destinationVm = _mapper.Map<DestinationVm>(destination);
-
-                return destinationVm;
-            }
-        }
-
         public List<DestinationVm> GetDestination()
         {
             using (var context = new VacationContext())
@@ -36,17 +23,6 @@ namespace VR_Vacation.Repositories
                 var destinationVm = _mapper.Map<List<DestinationVm>>(destination);
 
                 return destinationVm;
-            }
-        }
-
-        public void PostDestination(DestinationVm destinationVm)
-        {
-            using (var context = new VacationContext())
-            {
-                var destinationDao = _mapper.Map<Destination>(destinationVm);
-
-                context.Destinations.Add(destinationDao);
-                context.SaveChanges();
             }
         }
 
@@ -61,69 +37,44 @@ namespace VR_Vacation.Repositories
             }
         }
 
-        public List<ExperienceVm> GetExperience()
-        {
-            using (var context = new VacationContext())
-            {
-                var experience = context.Experiences.ToList();
-                var experienceVm = _mapper.Map<List<ExperienceVm>>(experience);
-                return experienceVm;
-            }
-        }
-
         public List<ExperienceVm> GetExperienceByPackageId(int id)
         {
             using (var context = new VacationContext())
             {
-                var experience = context.Experiences.ToList()
-                    .FindAll(x => x.PackageId == id);
+                var experience = context.Experiences.Where(x => x.Package.Id == id).ToList();
+
                 var experienceVm = _mapper.Map<List<ExperienceVm>>(experience);
 
                 return experienceVm;
             }
         }
 
-        public void PostExperience(ExperienceVm experienceVm)
+        public int PostOrder(OrderVm orderVm)
         {
             using (var context = new VacationContext())
             {
-                var experienceDao = _mapper.Map<Experience>(experienceVm);
+                var orderDao = new Order
+                {
+                    Total = orderVm.Total,
+                    UserId = orderVm.UserId
+                };
 
-                context.Experiences.Add(experienceDao);
-                context.SaveChanges();
-            }
-        }
+                //fetch all experiences from order ids
+                var temp = orderVm.Experiences.Select(x => int.Parse(x.Id));
+                var experiences = context.Experiences.Where(x => temp.Contains(x.Id)).ToList();
 
-        public OrderVm GetOrder(int id)
-        {
-            using (var context = new VacationContext())
-            {
-                var order = context.Orders.Find(id);
-                var orderVm = _mapper.Map<OrderVm>(order);
+                //fetch all packages from order ids
+                temp = orderVm.Packages.Select(c => c.Id);
+                var packages = context.Packages.Where(x => temp.Contains(x.Id)).ToList();
 
-                return orderVm;
-            }
-        }
-
-        public List<OrderVm> GetOrder()
-        {
-            using (var context = new VacationContext())
-            {
-                var orders = context.Orders.ToList();
-                var ordersVm = _mapper.Map<List<OrderVm>>(orders);
-
-                return ordersVm;
-            }
-        }
-
-        public void PostOrder(OrderVm orderVm)
-        {
-            using (var context = new VacationContext())
-            {
-                var orderDao = _mapper.Map<Order>(orderVm);
+                //bind them to order
+                orderDao.Experiences = experiences;
+                orderDao.Packages = packages;
 
                 context.Orders.Add(orderDao);
                 context.SaveChanges();
+
+                return orderDao.Id;
             }
         }
 
@@ -153,57 +104,24 @@ namespace VR_Vacation.Repositories
         {
             using (var context = new VacationContext())
             {
-                var packages = context.Packages.ToList()
-                    .FindAll(x => x.DestinationId == id);
+                var packages = context.Packages.Where(x => x.Destination.Id == id).ToList();
                 var packagesVm = _mapper.Map<List<PackageVm>>(packages);
 
                 return packagesVm;
             }
         }
 
-        public void PostPackage(PackageVm packageVm)
-        {
-            using (var context = new VacationContext())
-            {
-                var packageDao = _mapper.Map<Package>(packageVm);
-                context.Packages.Add(packageDao);
-                context.SaveChanges();
-            }
-        }
-
-        public UserVm GetUser(int id)
-        {
-            using (var context = new VacationContext())
-            {
-                var user = context.Users.Find(id);
-                var userVm = _mapper.Map<UserVm>(user);
-
-                return userVm;
-            }
-        }
-
-        public List<UserVm> GetUser()
-        {
-            using (var context = new VacationContext())
-            {
-                var users = context.Users.ToList();
-                var usersVm = _mapper.Map<List<UserVm>>(users);
-
-                return usersVm;
-            }
-        }
-
-        public bool PostUser(UserVm userVm)
+        public int PostUser(UserVm userVm)
         {
             using (var context = new VacationContext())
             {
                 //check for username
-                if (context.Users.Any(u => u.Username == userVm.Username)) return false;
+                if (context.Users.Any(u => u.Username == userVm.Username)) return 0;
 
                 var userDao = _mapper.Map<User>(userVm);
                 context.Users.Add(userDao);
                 context.SaveChanges();
-                return true;
+                return userDao.Id;
             }
         }
 

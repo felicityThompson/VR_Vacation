@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
-using VR_Vacation.Models;
 using VR_Vacation.Repositories;
 using VR_Vacation.Services;
 
@@ -20,27 +20,49 @@ namespace VR_Vacation.Controllers
         // GET: Experiences by package Id
         public ActionResult Index(int id)
         {
-            var experiences = _vacationRepository.GetExperienceByPackageId(id);
+            try
+            {
+                var experiences = _vacationRepository.GetExperienceByPackageId(id);
 
-            return View(experiences.ToList());
+                return PartialView(experiences.ToList());
+            }
+            catch (Exception e)
+            {
+                //Log Exception
+                return View("Error");
+            }
         }
 
         // POST: Add Experience to cart
         [HttpPost]
         public ActionResult AddExperienceToCart(int id)
         {
-            _cartService.AddExperience(id);
+            try
+            {
+                _cartService.AddExperience(id);
 
-            return Json(new { status = 201, responseMessage = "Added to cart" });
+                return Json(new { status = 201, responseMessage = "Added to cart" });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = 500, responseMessage = "An error occured" });
+            }
         }
 
         // POST: Remove Experience from cart
         [HttpPost]
         public ActionResult RemoveExperienceFromCart(int id)
         {
-            _cartService.RemoveExperience(id);
+            try
+            {
+                _cartService.RemoveExperience(id);
 
-            return Json(new { status = 201, responseMessage = "removed from cart" });
+                return Json(new { status = 201, responseMessage = "removed from cart" });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = 500, responseMessage = "An error occured" });
+            }
         }
     }
 }

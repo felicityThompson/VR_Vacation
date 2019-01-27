@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace VR_Vacation.Models
 {
     public class OrderVm
     {
         public double Total { get; set; }
-
-        public bool IsPaid { get; set; }
 
         public int UserId { get; set; }
 

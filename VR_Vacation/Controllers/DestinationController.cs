@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using VR_Vacation.Repositories;
 
@@ -15,9 +16,18 @@ namespace VR_Vacation.Controllers
         // GET: Destination
         public ActionResult Index()
         {
-            var destinations = _vacationRepository.GetDestination();
+            try
+            {
+                var destinations = _vacationRepository.GetDestination();
 
-            return View(destinations.ToList());
+                return View(destinations.ToList());
+            }
+            catch (Exception e)
+            {
+                //Log exception
+
+                return View("Error");
+            }
         }
     }
 }

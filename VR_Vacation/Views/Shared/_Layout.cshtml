@@ -1,6 +1,6 @@
 ﻿@using VR_Vacation.Models
 @{
-    var user = Session["user"] as UserVm;
+    var user = Session["User"] as UserVm;
 }
 <!DOCTYPE html>
 <html>
@@ -29,6 +29,7 @@
                     <li>@Html.ActionLink("Destinations", "Index", "Destination")</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
+                    <li>@Html.ActionLink("Cart", "Index", "ShoppingCart")</li>
                     @if (user == null)
                     {
                         <li>@Html.ActionLink("Sign Up", "SignUp", "User")</li>
@@ -36,8 +37,6 @@
                     }
                     else
                     {
-                        @*<li><span class="glyphicon glyphicon-shopping-cart"></span></li>*@
-                        <li>@Html.ActionLink("Cart", "Index", "ShoppingCart")</li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@user.Username <span class="caret"></span></a>
                             <ul class="dropdown-menu">
@@ -49,12 +48,8 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container-fluid body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year</p>
-        </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")

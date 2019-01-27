@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using VR_Vacation.Repositories;
 using VR_Vacation.Services;
@@ -19,43 +20,80 @@ namespace VR_Vacation.Controllers
         // GET: All Packages
         public ActionResult Index()
         {
-            var packages = _vacationRepository.GetPackage();
+            try
+            {
+                var packages = _vacationRepository.GetPackage();
 
-            return View(packages.ToList());
+                return View(packages.ToList());
+            }
+            catch (Exception e)
+            {
+                //Log Exception
+
+                return View("Error");
+            }
         }
 
         // GET: Selected Package
         public ActionResult GetPackage(int id)
         {
-            var package = _vacationRepository.GetPackage(id);
+            try
+            {
+                var package = _vacationRepository.GetPackage(id);
 
-            return View("Package", package);
+                return View("Package", package);
+            }
+            catch (Exception e)
+            {
+                return View("Error");
+            }
         }
 
         // GET: Packages by Destination id
         public ActionResult GetPackageByDestinationId(int id)
         {
-            var package = _vacationRepository.GetPackagesByDestinationId(id);
+            try
+            {
+                var package = _vacationRepository.GetPackagesByDestinationId(id);
 
-            return View("Index", package.ToList());
+                return View("Index", package.ToList());
+            }
+            catch (Exception e)
+            {
+                return View("Error");
+            }
         }
 
         // Post: Add Package to Cart
         [HttpPost]
         public ActionResult AddPackageToCart(int id)
         {
-            _cartService.AddPackage(id);
+            try
+            {
+                _cartService.AddPackage(id);
 
-            return Json(new { status = 201, responseMessage = "Added to cart" });
+                return Json(new { status = 201, responseMessage = "Added to cart" });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = 500, responseMessage = "An error occured" });
+            }
         }
 
         // Post: Remove Package from Cart
         [HttpPost]
         public ActionResult RemovePackageFromCart(int id)
         {
-            _cartService.RemovePackage(id);
+            try
+            {
+                _cartService.RemovePackage(id);
 
-            return Json(new { status = 201, responseMessage = "Removed from cart" });
+                return Json(new { status = 201, responseMessage = "Removed from cart" });
+            }
+            catch (Exception e)
+            {
+                return Json(new { status = 500, responseMessage = "An error occured" });
+            }
         }
     }
 }

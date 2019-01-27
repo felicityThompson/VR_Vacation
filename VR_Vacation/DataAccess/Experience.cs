@@ -14,8 +14,6 @@ namespace VR_Vacation.DataAccess
         public double Price { get; set; }
         [Required]
         public string ImagePath { get; set; }
-        [Required]
-        public int PackageId { get; set; }
 
         public virtual Package Package { get; set; }
 

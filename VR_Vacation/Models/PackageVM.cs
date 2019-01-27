@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace VR_Vacation.Models
 {
@@ -16,8 +13,6 @@ namespace VR_Vacation.Models
         public string Description { get; set; }
 
         public double Price { get; set; }
-
-        public int DestinationId { get; set; }
 
         public virtual List<ExperienceVm> Experiences { get; set; }
     }

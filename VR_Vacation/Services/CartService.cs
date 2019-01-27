@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Linq;
+using System.Web;
 using VR_Vacation.Models;
 using VR_Vacation.Repositories;
 
@@ -62,6 +63,24 @@ namespace VR_Vacation.Services
 
             _cart.Experiences.Remove(experience);
             _cart.TotalAmount -= experience.Price;
+        }
+
+        public int Checkout(int id)
+        {
+            OrderVm order = new OrderVm
+            {
+                Packages = _cart.Packages.ToList(),
+                Experiences = _cart.Experiences.ToList(),
+                UserId = id,
+                Total = _cart.TotalAmount
+            };
+
+            var orderNumber = _vacationRepository.PostOrder(order);
+
+            if (orderNumber > 0)
+                HttpContext.Current.Session["Cart"] = null;
+
+            return orderNumber;
         }
     }
 }

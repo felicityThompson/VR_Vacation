@@ -1,32 +1,88 @@
-﻿using System.Web.Mvc;
-using VR_Vacation.Repositories;
+﻿using System;
+using System.Web.Mvc;
 using VR_Vacation.Services;
 
 namespace VR_Vacation.Controllers
 {
     public class ShoppingCartController : Controller
     {
-        private IVacationRepository _vacationRepository;
         private ICartService _cartService;
+        private IUserService _iUserService;
 
-        public ShoppingCartController(IVacationRepository vacationRepository, ICartService cartService)
+        public ShoppingCartController(ICartService cartService, IUserService userService)
         {
-            _vacationRepository = vacationRepository;
             _cartService = cartService;
+            _iUserService = userService;
         }
 
-        // GET: ShoppingCart
+        // GET: View Shopping Cart
         public ActionResult Index()
         {
-            var cart = _cartService.GetCart();
+            try
+            {
+                var cart = _cartService.GetCart();
 
-            return View(cart);
+                return View(cart);
+            }
+            catch (Exception e)
+            {
+                //Handle Exception
+
+                return View("Error");
+            }
         }
 
-        // add items
+        // POST: Remove package
+        public ActionResult RemovePackage(int id)
+        {
+            try
+            {
+                _cartService.RemovePackage(id);
 
-        //remove items
+                return View("Index");
+            }
+            catch (Exception e)
+            {
+                return View("Error");
+            }
+        }
 
-        //check out
+        // POST: Remove experience
+        public ActionResult RemoveExperience(int id)
+        {
+            try
+            {
+                _cartService.RemoveExperience(id);
+
+                return View("Index");
+            }
+            catch (Exception e)
+            {
+                return View("Error");
+            }
+        }
+
+        // POST: Checkout
+        public ActionResult CheckOut()
+        {
+            //you must be logged in to do that
+            var user = _iUserService.GetUser();
+
+            if (user != null)
+            {
+                try
+                {
+                    var orderNumber = _cartService.Checkout(user.Id);
+
+                    return Json(new { status = 201, responseMessage = "Success!!", orderNumber = orderNumber });
+                }
+                catch (Exception e)
+                {
+                    //Log exceptions                    
+                }
+            }
+
+            return Json(new { status = 500, responseMessage = "You must be logged in to do that" });
+        }
     }
 }

@@ -9,8 +9,6 @@ namespace VR_Vacation.DataAccess
         [Required]
         public double Total { get; set; }
         [Required]
-        public bool IsPaid { get; set; }
-        [Required]
         public int UserId { get; set; }
 
         public virtual ICollection<Package> Packages { get; set; }

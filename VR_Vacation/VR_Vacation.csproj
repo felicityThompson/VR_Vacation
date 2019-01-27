@@ -200,8 +200,8 @@
     <Compile Include="Repositories\VacationRepository.cs" />
     <Compile Include="Services\CartService.cs" />
     <Compile Include="Services\ICartService.cs" />
-    <Compile Include="Services\IVacationServices.cs" />
-    <Compile Include="Services\VacationService.cs" />
+    <Compile Include="Services\IUserService.cs" />
+    <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />

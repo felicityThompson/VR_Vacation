@@ -4,17 +4,23 @@
     ViewBag.Title = "Index";
 }
 
-
-<h1>Packages</h1>
-<div class="list-group">
-    @foreach (var item in Model)
-    {
-        <div class="list-group">
-            <img src="@Html.DisplayFor(model => item.ImagePath)" alt="image" style="max-width: 100%; max-height:100%;" />
-            <div>
-                <h5>@Html.DisplayFor(model => item.Name)</h5>
-                <a href="package/getpackage/@item.Id" class="btn btn-primary">See more...</a>
+<div class="row">
+    <div class="container">
+        <div class="row">
+            <h1>Packages</h1>
+            <div class="list-group">
+                @foreach (var item in Model)
+                {
+                    <div class="list-group">
+                        <img src="@Html.DisplayFor(model => item.ImagePath)" alt="image" style="max-width: 100%; max-height:100%;" />
+                        <div>
+                            <h5>@Html.DisplayFor(model => item.Name)</h5>
+                            <a href="/package/getpackage/@item.Id" class="btn btn-primary">See more...</a>
+                        </div>
+                    </div>
+                    <hr />
+                }
             </div>
         </div>
-    }
+    </div>
 </div>

@@ -43,20 +43,18 @@ namespace VR_Vacation
             var config = new MapperConfiguration(cfg=>
             {
                 cfg.CreateMap<Destination, DestinationVm>();
-                cfg.CreateMap<Experience, ExperienceVm>();
-                cfg.CreateMap<Order, OrderVm>();
-                cfg.CreateMap<Package, PackageVm>();
+                cfg.CreateMap<ExperienceVm, Experience>().ReverseMap();                  
+                cfg.CreateMap<OrderVm, Order>().ReverseMap();
+                cfg.CreateMap<Package, PackageVm>().ReverseMap();
                 cfg.CreateMap<User, UserVm>();
             });
 
             IMapper mapper = config.CreateMapper();
 
             container.RegisterInstance(mapper);
-            container.RegisterType<IVacationService, VacationService>();
             container.RegisterType<IVacationRepository, VacationRepository>();
             container.RegisterType<ICartService, CartService>();
+            container.RegisterType<IUserService, UserService>();
         }
     }
 }
-
-//cfg.CreateMap<User, UserVm>().ForMember(dest => dest.TheUserName, x => x.MapFrom(src => src.Username));

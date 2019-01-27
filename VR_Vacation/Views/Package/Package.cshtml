@@ -4,19 +4,26 @@
     ViewBag.Title = "Package";
 }
 
-<h1>@Html.DisplayFor(model => model.Name)</h1>
-<div class="list-group">
-    <div class="list-group">
-        <img src="@Html.DisplayFor(model =>model.ImagePath)" alt="image" style="max-width: 100%; max-height:100%;" />
-        <div>
-            <h7>@Html.DisplayFor(model => model.Description)</h7><br />
-            <p><small class="text-muted">@Html.DisplayFor(model => model.Price)</small>:- SEK</p>
-            <div id="addedToCart"></div>
-            <a id="addToCart" class="btn btn-primary">Add to cart</a>
-            <a href="/ShoppingCart/Index" id="goToCart" class="btn btn-info">Go to cart</a>
+<div class="row">
+    <div class="container">
+        <div class="row">            
+            <div class="col-md-10">
+                <h1>@Html.DisplayFor(model => model.Name)</h1>
+                <img src="@Html.DisplayFor(model => model.ImagePath)" alt="image" style="max-width: 100%; max-height: 100%;" />
+                <div class="col-md-10">
+                    <h7>@Html.DisplayFor(model => model.Description)</h7><br />
+                    <p class="text-info">@Html.DisplayFor(model => model.Price) :- SEK</p>
+                    <div style="display: none;" id="addedToCart" class="alert alert-success">
+                        <div></div>
+                    </div>
+                    <a id="addToCart" class="btn btn-primary">Add to cart</a>
+                    <a href="/ShoppingCart/Index" id="goToCart" class="btn btn-info">Go to cart</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 @Html.Action("Index", "Experiences", @Model.Id)
 
 @section scripts{
@@ -30,8 +37,11 @@
                     dataType: "json",
                     data: { id: id },
                     success: function(result) {
+                        $("#addedToCart").fadeTo(2000, 500).slideUp(500, function(){
+                            $("#addedToCart").slideUp(500);
+                        });
                         $('#addedToCart').html(result.responseMessage);
-                        $('#addedToCart').addClass('alert alert-info');
+                        $('#addedToCart > div').addClass('alert alert-dismissible alert-info');
                     }
                 });
             });
@@ -46,9 +56,14 @@
                     url: "/Experiences/AddExperienceToCart",
                     dataType: "json",
                     data: { id: id },
-                    success: function(result) {
+                    success: function (result) {
+                        $("#exp-" + id).fadeTo(2000, 500).slideUp(500, function () {
+                            $("#exp-" + id).slideUp(500);
+                        });
                         $("#exp-" + id).html(result.responseMessage);
-                        $("#exp-" + id).addClass('alert alert-info');
+                        $("#exp-" + id + " > div").addClass('alert alert-info');
+                    }, error: function() {
+                        
                     }
                 });
             });
